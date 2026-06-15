@@ -33,6 +33,7 @@ import type {
   VisualMapComponentOption,
 } from "echarts/components";
 import { financialThemeName, registerFinancialTheme } from "../../lib/echartsTheme";
+import { cn } from "../../lib/utils";
 import worldGeoJson from "echarts-countries-js/world-x.json";
 
 echarts.use([
@@ -70,10 +71,12 @@ export type EChartOption = ComposeOption<
 export function EChart({
   option,
   height = 320,
+  className,
   onClick,
 }: {
   option: EChartOption;
-  height?: number;
+  height?: number | string;
+  className?: string;
   onClick?: (params: unknown) => void;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -81,12 +84,18 @@ export function EChart({
 
   useEffect(() => {
     if (!ref.current) return undefined;
-    instanceRef.current = echarts.init(ref.current, financialThemeName);
+    const node = ref.current;
+    instanceRef.current = echarts.init(node, financialThemeName);
 
     const resize = () => instanceRef.current?.resize();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize);
+
+    observer?.observe(node);
     window.addEventListener("resize", resize);
+    requestAnimationFrame(resize);
 
     return () => {
+      observer?.disconnect();
       window.removeEventListener("resize", resize);
       instanceRef.current?.dispose();
       instanceRef.current = null;
@@ -107,5 +116,5 @@ export function EChart({
     };
   }, [onClick]);
 
-  return <div ref={ref} className="w-full" style={{ height }} />;
+  return <div ref={ref} className={cn("min-w-0 w-full", className)} style={{ height }} />;
 }

@@ -22,7 +22,7 @@ export function UserCenterPage({ savedProjects }: { savedProjects: SavedProject[
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1fr_2fr]">
-        <Card className="rounded-lg p-8">
+        <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
           <CardHeader>
             <div>
               <CardTitle>保存概览</CardTitle>
@@ -44,7 +44,7 @@ export function UserCenterPage({ savedProjects }: { savedProjects: SavedProject[
 
         <div className="grid gap-4">
           {savedProjects.length === 0 ? (
-            <Card className="rounded-lg p-8">
+            <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
               <CardHeader>
                 <div>
                   <CardTitle>暂无保存记录</CardTitle>
@@ -56,7 +56,7 @@ export function UserCenterPage({ savedProjects }: { savedProjects: SavedProject[
             savedProjects.map((project) => {
               const country = countryByCode[project.input.countryCode];
               return (
-                <Card key={project.id} className="rounded-lg p-8">
+                <Card key={project.id} className="rounded-lg p-4 sm:p-6 lg:p-8">
                   <CardHeader>
                     <div>
                       <CardTitle>{project.name}</CardTitle>

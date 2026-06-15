@@ -249,7 +249,7 @@ export function CalculatorPage({
         }
       />
 
-      <section className="mb-6 rounded-md border border-slate-200 bg-slate-50 p-6 shadow-card dark:border-slate-800 dark:bg-slate-900">
+      <section className="mb-6 rounded-md border border-slate-200 bg-slate-50 p-4 shadow-card dark:border-slate-800 dark:bg-slate-900 sm:p-6">
         <div className="grid gap-6 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
           <Field label="国家">
             <UnderlineSelect value={input.countryCode} onChange={(event) => onCountryTrackChange(event.target.value, input.track)}>
@@ -400,7 +400,7 @@ export function CalculatorPage({
         </div>
 
         <div className="space-y-6 lg:col-span-7">
-          <Card className="rounded-lg p-8">
+          <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
             <CardHeader>
               <div>
                 <CardTitle>结果实时预览</CardTitle>
@@ -436,7 +436,7 @@ export function CalculatorPage({
             </div>
           </Card>
 
-          <Card className="rounded-lg p-8">
+          <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
             <CardHeader>
               <div>
                 <CardTitle>全生命周期现金流</CardTitle>
@@ -448,7 +448,7 @@ export function CalculatorPage({
           </Card>
 
           <div className="grid gap-6">
-            <Card className="rounded-lg p-8">
+            <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
               <CardHeader>
                 <div>
                   <CardTitle>敏感性矩阵</CardTitle>
@@ -458,7 +458,7 @@ export function CalculatorPage({
               </CardHeader>
               <EChart option={buildMatrixOption(result)} height={336} />
             </Card>
-            <Card className="rounded-lg p-8">
+            <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
               <CardHeader>
                 <div>
                   <CardTitle>龙卷风图</CardTitle>

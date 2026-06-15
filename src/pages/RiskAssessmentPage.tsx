@@ -54,7 +54,7 @@ export function RiskAssessmentPage({
         }
       />
 
-      <section className="mb-6 rounded-md border border-slate-200 bg-slate-50 p-6 shadow-card dark:border-slate-800 dark:bg-slate-900">
+      <section className="mb-6 rounded-md border border-slate-200 bg-slate-50 p-4 shadow-card dark:border-slate-800 dark:bg-slate-900 sm:p-6">
         <div className="grid gap-6 lg:grid-cols-[1fr_auto_auto] lg:items-end">
           <Field label="国家">
             <UnderlineSelect value={countryCode} onChange={(event) => onCountryChange(event.target.value)}>
@@ -71,7 +71,7 @@ export function RiskAssessmentPage({
       </section>
 
       <section className="mb-6 grid gap-6 lg:grid-cols-[1fr_2fr]">
-        <Card className="rounded-lg p-8">
+        <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
           <CardHeader>
             <div>
               <CardTitle>综合风险等级</CardTitle>
@@ -79,7 +79,7 @@ export function RiskAssessmentPage({
             </div>
             <ShieldCheck aria-hidden="true" className="h-5 w-5 text-primary-700" strokeWidth={1.5} />
           </CardHeader>
-          <div className="flex items-end justify-between gap-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
             <div>
               <p className="text-2xl font-semibold text-slate-900 dark:text-slate-50">{assessment.level}</p>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">加权得分 {formatNumber(assessment.weightedScore, 2)} / 10</p>

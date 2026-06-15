@@ -69,6 +69,7 @@ export function MarketDashboard({
   const dataSourceNotes = getDataSourceNotes();
 
   const mapOption: EChartOption = {
+    backgroundColor: "#E0F2FE",
     tooltip: {
       trigger: "item",
       formatter: (params: any) => {
@@ -101,16 +102,17 @@ export function MarketDashboard({
         type: "map",
         map: "huannengWorld",
         roam: true,
-        zoom: 1.12,
-        layoutCenter: ["55%", "49%"],
-        layoutSize: "148%",
+        zoom: 1.04,
+        scaleLimit: { min: 0.9, max: 2.8 },
+        layoutCenter: ["52%", "50%"],
+        layoutSize: "132%",
         emphasis: {
           label: { show: false },
           itemStyle: { areaColor: "#D97706", borderColor: "#0F172A", borderWidth: 1 },
         },
         itemStyle: {
-          areaColor: "#E2E8F0",
-          borderColor: "#E2E8F0",
+          areaColor: "#F8FAFC",
+          borderColor: "#CBD5E1",
           borderWidth: 0.5,
         },
         data: countries.map((country) => ({
@@ -171,7 +173,7 @@ export function MarketDashboard({
         description="按赛道、区域和风险等级筛选海外新能源投资机会，快速识别适合中资参与的国家样本。"
       />
 
-      <section className="mb-6 rounded-md border border-slate-200 bg-slate-50 p-6 shadow-card dark:border-slate-800 dark:bg-slate-900">
+      <section className="mb-6 rounded-md border border-slate-200 bg-slate-50 p-4 shadow-card dark:border-slate-800 dark:bg-slate-900 sm:p-6">
         <div className="grid gap-6 md:grid-cols-3">
           <Field label="赛道">
             <UnderlineSelect
@@ -215,7 +217,7 @@ export function MarketDashboard({
       </section>
 
       <section className="mb-6 grid items-start gap-6 lg:grid-cols-[2fr_1fr]">
-        <Card className="rounded-lg p-8">
+        <Card className="overflow-hidden rounded-lg p-4 sm:p-6 lg:p-8">
           <CardHeader>
             <div>
               <CardTitle>投资吸引力世界地图</CardTitle>
@@ -225,7 +227,8 @@ export function MarketDashboard({
           </CardHeader>
           <EChart
             option={mapOption}
-            height={360}
+            height="clamp(280px, 52vw, 360px)"
+            className="overflow-hidden rounded-md"
             onClick={(params: any) => {
               const country = countries.find((item) => item.englishName === params.name);
               if (country) onCountrySelect(country.code);
@@ -240,7 +243,7 @@ export function MarketDashboard({
           </div>
         </Card>
 
-        <Card className="rounded-lg p-8">
+        <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
           <CardHeader>
             <div>
               <CardTitle>筛选样本</CardTitle>
@@ -256,7 +259,7 @@ export function MarketDashboard({
                   key={country.code}
                   type="button"
                   onClick={() => onCountrySelect(country.code)}
-                  className="flex w-full items-center justify-between rounded-sm border border-slate-200 bg-slate-100 px-4 py-3 text-left transition-all duration-150 ease-financial hover:-translate-y-0.5 hover:shadow-hover dark:border-slate-800 dark:bg-slate-950"
+                  className="flex w-full items-center justify-between gap-3 rounded-sm border border-slate-200 bg-slate-100 px-4 py-3 text-left transition-all duration-150 ease-financial hover:-translate-y-0.5 hover:shadow-hover dark:border-slate-800 dark:bg-slate-950"
                 >
                   <span>
                     <span className="block text-base font-medium text-slate-900 dark:text-slate-50">{country.name}</span>
@@ -313,7 +316,7 @@ export function MarketDashboard({
       </section>
 
       <section className="mb-6 grid gap-6 lg:grid-cols-2">
-        <Card className="rounded-lg p-8">
+        <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
           <CardHeader>
             <div>
               <CardTitle>近5年投资规模走势</CardTitle>
@@ -330,7 +333,7 @@ export function MarketDashboard({
             />
           </div>
         </Card>
-        <Card className="rounded-lg p-8">
+        <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
           <CardHeader>
             <div>
               <CardTitle>区域装机增速排名</CardTitle>
@@ -348,7 +351,7 @@ export function MarketDashboard({
         </Card>
       </section>
 
-      <section className="rounded-md border border-slate-200 bg-slate-50 p-6 text-xs text-slate-400 dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded-md border border-slate-200 bg-slate-50 p-4 text-xs text-slate-400 dark:border-slate-800 dark:bg-slate-900 sm:p-6">
         {dataSourceNotes.map((note) => (
           <p key={note}>{note}</p>
         ))}

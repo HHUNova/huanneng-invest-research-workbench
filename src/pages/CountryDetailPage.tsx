@@ -69,7 +69,7 @@ export function CountryDetailPage({
       </section>
 
       <section className="mb-6 grid gap-6 lg:grid-cols-[1fr_1fr]">
-        <Card className="rounded-lg p-8">
+        <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
           <CardHeader>
             <div>
               <CardTitle>市场画像</CardTitle>
@@ -103,7 +103,7 @@ export function CountryDetailPage({
           </div>
         </Card>
 
-        <Card className="rounded-lg p-8">
+        <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
           <CardHeader>
             <div>
               <CardTitle>可测算赛道</CardTitle>

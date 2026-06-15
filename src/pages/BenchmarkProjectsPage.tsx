@@ -22,7 +22,7 @@ export function BenchmarkProjectsPage() {
         {projects.map((project) => {
           const country = countryByCode[project.countryCode];
           return (
-            <Card key={project.name} className="rounded-lg p-8">
+            <Card key={project.name} className="rounded-lg p-4 sm:p-6 lg:p-8">
               <CardHeader>
                 <div>
                   <CardTitle>{project.name}</CardTitle>
@@ -52,7 +52,7 @@ export function BenchmarkProjectsPage() {
                   </p>
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between gap-4 rounded-md border border-slate-200 bg-slate-100 p-4 dark:border-slate-800 dark:bg-slate-950">
+              <div className="mt-4 flex flex-col gap-3 rounded-md border border-slate-200 bg-slate-100 p-4 dark:border-slate-800 dark:bg-slate-950 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                 <p className="text-sm text-slate-600 dark:text-slate-400">{project.financing}</p>
                 <Badge>对标</Badge>
               </div>

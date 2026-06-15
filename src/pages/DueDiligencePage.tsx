@@ -46,7 +46,7 @@ export function DueDiligencePage({
         }
       />
 
-      <section className="mb-6 rounded-md border border-slate-200 bg-slate-50 p-6 shadow-card dark:border-slate-800 dark:bg-slate-900">
+      <section className="mb-6 rounded-md border border-slate-200 bg-slate-50 p-4 shadow-card dark:border-slate-800 dark:bg-slate-900 sm:p-6">
         <Field label="赛道">
           <UnderlineSelect value={track} onChange={(event) => onTrackChange(event.target.value as Track)}>
             {tracks.map((item) => (
@@ -60,7 +60,7 @@ export function DueDiligencePage({
 
       <section className="grid gap-6 lg:grid-cols-4">
         {dueDiligenceCategories.map((category) => (
-          <Card key={category.name} className="rounded-lg p-8">
+          <Card key={category.name} className="rounded-lg p-4 sm:p-6 lg:p-8">
             <CardHeader>
               <div>
                 <CardTitle>{category.name}</CardTitle>
@@ -79,7 +79,7 @@ export function DueDiligencePage({
         ))}
       </section>
 
-      <section className="mt-6 rounded-md border border-slate-200 bg-slate-50 p-6 shadow-card dark:border-slate-800 dark:bg-slate-900">
+      <section className="mt-6 rounded-md border border-slate-200 bg-slate-50 p-4 shadow-card dark:border-slate-800 dark:bg-slate-900 sm:p-6">
         <h3 className="text-lg font-medium text-slate-900 dark:text-slate-50">{trackLabels[track]}专项检查</h3>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           {trackSpecificChecks[track].map((item) => (

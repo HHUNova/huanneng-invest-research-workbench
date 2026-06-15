@@ -29,7 +29,7 @@ export function DataGovernanceLayer({ children }: DataGovernanceLayerProps) {
   return (
     <>
       {children}
-      <aside className="fixed bottom-4 right-4 z-50 max-w-[calc(100vw-32px)]">
+      <aside className="fixed bottom-28 right-3 z-50 max-w-[calc(100vw-24px)] lg:bottom-4 lg:right-4 lg:max-w-[calc(100vw-32px)]">
         {open ? (
           <div className="w-96 max-w-full rounded-lg border border-slate-200 bg-white p-4 shadow-hover">
             <div className="flex items-start justify-between gap-3">
