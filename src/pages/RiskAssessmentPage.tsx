@@ -97,7 +97,9 @@ export function RiskAssessmentPage({
         <div className="grid gap-6 md:grid-cols-5">
           {country.risk.dimensions.map((dimension) => (
             <Card key={dimension.key} className="p-4">
-              <p className="text-sm text-slate-600 dark:text-slate-400">{dimension.name}</p>
+              <p className="whitespace-nowrap text-[13px] leading-5 text-slate-600 dark:text-slate-400">
+                {dimension.name}
+              </p>
               <p className="mt-3 text-xl font-semibold text-slate-900 dark:text-slate-50">{formatNumber(dimension.score, 1)}</p>
               <div className="mt-4 h-2 rounded-sm bg-slate-200 dark:bg-slate-950">
                 <div
