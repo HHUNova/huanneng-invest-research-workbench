@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Download, Save, SlidersHorizontal, WalletCards } from "lucide-react";
 import { calculateProject } from "../calculations/finance";
 import { countries, countryByCode } from "../data/countries";
@@ -17,6 +17,29 @@ import type { CalculationInput, CalculationResult, Scenario, Track } from "../ty
 
 const tracks: Track[] = ["solar", "onshoreWind", "offshoreWind", "storage", "hydro"];
 const scenarios: Scenario[] = ["base", "optimistic", "pessimistic"];
+const compactChartQuery = "(max-width: 640px)";
+
+function useCompactCharts() {
+  const [compact, setCompact] = useState(() =>
+    typeof window === "undefined" ? false : window.matchMedia(compactChartQuery).matches,
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const media = window.matchMedia(compactChartQuery);
+    const update = () => setCompact(media.matches);
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => {
+      media.removeEventListener("change", update);
+    };
+  }, []);
+
+  return compact;
+}
 
 function NumberField({
   label,
@@ -91,7 +114,7 @@ function buildCashFlowOption(result: CalculationResult): EChartOption {
   };
 }
 
-function buildSensitivityOption(result: CalculationResult): EChartOption {
+function buildSensitivityOption(result: CalculationResult, compact = false): EChartOption {
   const maxAbs = Math.max(
     ...result.sensitivity.flatMap((item) => [
       Math.abs(item.downsideNpv - result.npvMillionUSD),
@@ -106,28 +129,40 @@ function buildSensitivityOption(result: CalculationResult): EChartOption {
       axisPointer: { type: "shadow" },
       valueFormatter: (value) => `${formatNumber(Number(value), 1)} 百万美元`,
     },
-    legend: { top: 0, right: 8 },
-    grid: { top: 48, right: 32, bottom: 40, left: 104, containLabel: true },
+    legend: compact
+      ? {
+          top: 0,
+          left: "center",
+          itemWidth: 12,
+          itemHeight: 8,
+          itemGap: 14,
+          textStyle: { color: "#475569", fontSize: 12 },
+        }
+      : { top: 0, right: 8 },
+    grid: compact
+      ? { top: 48, right: 8, bottom: 24, left: 8, containLabel: true }
+      : { top: 48, right: 32, bottom: 40, left: 104, containLabel: true },
     xAxis: {
       type: "value",
       min: -Math.ceil(maxAbs * 1.15),
       max: Math.ceil(maxAbs * 1.15),
-      axisLabel: { formatter: (value: number) => formatNumber(value, 0) },
-      name: "NPV变动（百万美元）",
+      splitNumber: compact ? 4 : undefined,
+      axisLabel: { formatter: (value: number) => formatNumber(value, 0), fontSize: compact ? 10 : 12, hideOverlap: true },
+      name: compact ? undefined : "NPV变动（百万美元）",
       nameLocation: "middle",
       nameGap: 28,
     },
     yAxis: {
       type: "category",
       data: result.sensitivity.map((item) => item.variable),
-      axisLabel: { color: "#475569" },
+      axisLabel: { color: "#475569", fontSize: compact ? 12 : 12, margin: compact ? 8 : 8 },
     },
     series: [
       {
         name: "下行情景",
         type: "bar",
         stack: "npv",
-        barWidth: 18,
+        barWidth: compact ? 12 : 18,
         data: result.sensitivity.map((item) => Number((item.downsideNpv - result.npvMillionUSD).toFixed(2))),
         itemStyle: { color: "#475569", borderRadius: [4, 0, 0, 4] },
       },
@@ -135,7 +170,7 @@ function buildSensitivityOption(result: CalculationResult): EChartOption {
         name: "上行情景",
         type: "bar",
         stack: "npv",
-        barWidth: 18,
+        barWidth: compact ? 12 : 18,
         data: result.sensitivity.map((item) => Number((item.upsideNpv - result.npvMillionUSD).toFixed(2))),
         itemStyle: { color: "#0F766E", borderRadius: [0, 4, 4, 0] },
       },
@@ -143,7 +178,7 @@ function buildSensitivityOption(result: CalculationResult): EChartOption {
   };
 }
 
-function buildMatrixOption(result: CalculationResult): EChartOption {
+function buildMatrixOption(result: CalculationResult, compact = false): EChartOption {
   const variables = ["电价", "总投资", "利用小时数", "利率"];
   const deltas = [-10, -5, 5, 10];
 
@@ -155,19 +190,21 @@ function buildMatrixOption(result: CalculationResult): EChartOption {
         return `${cell.variable}<br/>扰动：${formatPercent(cell.delta, 0)}<br/>IRR：${formatPercent(cell.projectIRR, 1)}<br/>NPV：${formatMoney(cell.npvMillionUSD)}`;
       },
     },
-    grid: { top: 48, right: 32, bottom: 40, left: 104, containLabel: true },
+    grid: compact
+      ? { top: 8, right: 4, bottom: 44, left: 4, containLabel: true }
+      : { top: 48, right: 32, bottom: 40, left: 104, containLabel: true },
     xAxis: {
       type: "category",
       data: deltas.map((delta) => `${delta}%`),
       name: "变量扰动",
       nameLocation: "middle",
-      nameGap: 28,
-      axisLabel: { color: "#475569" },
+      nameGap: compact ? 24 : 28,
+      axisLabel: { color: "#475569", fontSize: compact ? 11 : 12, interval: 0, margin: compact ? 8 : 8 },
     },
     yAxis: {
       type: "category",
       data: variables,
-      axisLabel: { color: "#475569" },
+      axisLabel: { color: "#475569", fontSize: compact ? 12 : 12, margin: compact ? 8 : 8 },
     },
     visualMap: {
       min: Math.min(...result.matrix.map((item) => item.projectIRR)),
@@ -183,7 +220,7 @@ function buildMatrixOption(result: CalculationResult): EChartOption {
           show: true,
           formatter: (params: any) => formatPercent(Number(params.value[2]), 1),
           color: "#0F172A",
-          fontSize: 12,
+          fontSize: compact ? 10 : 12,
         },
         emphasis: {
           itemStyle: {
@@ -220,6 +257,7 @@ export function CalculatorPage({
   });
   const result = useMemo(() => calculateProject(input, scenario), [input, scenario]);
   const selectedCountry = countryByCode[input.countryCode];
+  const compactCharts = useCompactCharts();
 
   function patchInput(patch: Partial<CalculationInput>) {
     onInputChange({ ...input, ...patch });
@@ -456,7 +494,7 @@ export function CalculatorPage({
                 </div>
                 <SlidersHorizontal aria-hidden="true" className="h-5 w-5 text-primary-700" strokeWidth={1.5} />
               </CardHeader>
-              <EChart option={buildMatrixOption(result)} height={336} />
+              <EChart option={buildMatrixOption(result, compactCharts)} height={compactCharts ? 288 : 336} />
             </Card>
             <Card className="rounded-lg p-4 sm:p-6 lg:p-8">
               <CardHeader>
@@ -465,7 +503,7 @@ export function CalculatorPage({
                   <CardDescription>按 NPV 变动幅度排序。</CardDescription>
                 </div>
               </CardHeader>
-              <EChart option={buildSensitivityOption(result)} height={320} />
+              <EChart option={buildSensitivityOption(result, compactCharts)} height={compactCharts ? 288 : 320} />
             </Card>
           </div>
 
