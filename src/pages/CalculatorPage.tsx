@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Download, Save, SlidersHorizontal, WalletCards } from "lucide-react";
 import { calculateProject } from "../calculations/finance";
 import { countries, countryByCode } from "../data/countries";
@@ -13,33 +13,11 @@ import { Field, UnderlineInput, UnderlineSelect } from "../components/ui/Field";
 import { SegmentedControl } from "../components/ui/SegmentedControl";
 import { formatMoney, formatNumber, formatPercent } from "../lib/utils";
 import { scenarioLabels, trackLabels } from "../lib/labels";
+import { useCompactCharts } from "../lib/useCompactCharts";
 import type { CalculationInput, CalculationResult, Scenario, Track } from "../types";
 
 const tracks: Track[] = ["solar", "onshoreWind", "offshoreWind", "storage", "hydro"];
 const scenarios: Scenario[] = ["base", "optimistic", "pessimistic"];
-const compactChartQuery = "(max-width: 640px)";
-
-function useCompactCharts() {
-  const [compact, setCompact] = useState(() =>
-    typeof window === "undefined" ? false : window.matchMedia(compactChartQuery).matches,
-  );
-
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-
-    const media = window.matchMedia(compactChartQuery);
-    const update = () => setCompact(media.matches);
-
-    update();
-    media.addEventListener("change", update);
-
-    return () => {
-      media.removeEventListener("change", update);
-    };
-  }, []);
-
-  return compact;
-}
 
 function NumberField({
   label,

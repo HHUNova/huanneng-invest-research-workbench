@@ -10,6 +10,7 @@ import { Field, UnderlineSelect } from "../components/ui/Field";
 import { getCountries, getDataSourceNotes, getMarketCharts, getMarketSummary, type MarketFilters } from "../services/dataService";
 import { formatNumber, formatPercent } from "../lib/utils";
 import { regionLabels, riskLabels, trackLabels } from "../lib/labels";
+import { useCompactCharts } from "../lib/useCompactCharts";
 import type { Region, RiskLevel, Track } from "../types";
 
 const allTracks: Array<Track | "all"> = ["all", "solar", "onshoreWind", "offshoreWind", "storage", "hydro"];
@@ -67,6 +68,7 @@ export function MarketDashboard({
   const summary = useMemo(() => getMarketSummary(filters), [filters]);
   const charts = getMarketCharts();
   const dataSourceNotes = getDataSourceNotes();
+  const compactCharts = useCompactCharts();
 
   const mapOption: EChartOption = {
     backgroundColor: "#E0F2FE",
@@ -125,13 +127,28 @@ export function MarketDashboard({
 
   const investmentOption: EChartOption = {
     tooltip: { trigger: "axis" },
-    xAxis: { type: "category", data: charts.globalInvestmentTrend.map((item) => item.year) },
-    yAxis: { type: "value", name: "十亿美元" },
+    grid: compactCharts
+      ? { top: 16, right: 8, bottom: 28, left: 4, containLabel: true }
+      : { top: 24, right: 24, bottom: 32, left: 56, containLabel: true },
+    xAxis: {
+      type: "category",
+      data: charts.globalInvestmentTrend.map((item) => item.year),
+      axisLabel: { color: "#475569", fontSize: compactCharts ? 11 : 12, interval: 0 },
+      axisTick: { alignWithLabel: true },
+    },
+    yAxis: {
+      type: "value",
+      name: compactCharts ? undefined : "十亿美元",
+      max: (value) => Math.ceil(value.max * 1.12),
+      splitNumber: compactCharts ? 4 : 5,
+      axisLabel: { color: "#475569", fontSize: compactCharts ? 11 : 12 },
+      splitLine: { lineStyle: { color: "#E2E8F0", type: "dashed" } },
+    },
     series: [
       {
         name: "投资规模",
         type: "bar",
-        barWidth: 28,
+        barWidth: compactCharts ? 22 : 28,
         data: charts.globalInvestmentTrend.map((item) => item.investment),
         itemStyle: { color: "#0F766E", borderRadius: [4, 4, 0, 0] },
       },
@@ -148,17 +165,25 @@ export function MarketDashboard({
 
   const growthOption: EChartOption = {
     tooltip: { trigger: "axis" },
-    grid: { top: 24, right: 24, bottom: 24, left: 96, containLabel: true },
-    xAxis: { type: "value", axisLabel: { formatter: (value: number) => `${value}%` } },
+    grid: compactCharts
+      ? { top: 8, right: 8, bottom: 16, left: 4, containLabel: true }
+      : { top: 24, right: 24, bottom: 24, left: 96, containLabel: true },
+    xAxis: {
+      type: "value",
+      splitNumber: compactCharts ? 4 : 5,
+      axisLabel: { formatter: (value: number) => `${value}%`, color: "#475569", fontSize: compactCharts ? 10 : 12, hideOverlap: true },
+      splitLine: { lineStyle: { color: "#E2E8F0", type: "dashed" } },
+    },
     yAxis: {
       type: "category",
       data: charts.regionGrowthRanking.map((item) => regionLabels[item.region]),
+      axisLabel: { color: "#475569", fontSize: compactCharts ? 12 : 12, margin: compactCharts ? 8 : 8 },
     },
     series: [
       {
         name: "装机增速",
         type: "bar",
-        barWidth: 16,
+        barWidth: compactCharts ? 14 : 16,
         data: charts.regionGrowthRanking.map((item) => Number((item.growth * 100).toFixed(1))),
         itemStyle: { color: "#0F766E", borderRadius: [0, 4, 4, 0] },
       },
@@ -324,7 +349,7 @@ export function MarketDashboard({
             </div>
             <TrendingUp aria-hidden="true" className="h-5 w-5 text-primary-700" strokeWidth={1.5} />
           </CardHeader>
-          <EChart option={investmentOption} height={320} />
+          <EChart option={investmentOption} height={compactCharts ? 280 : 320} />
           <div className="mt-3 flex justify-end">
             <DataSourceTag
               source={sourceTags.marketScale.text}
@@ -340,7 +365,7 @@ export function MarketDashboard({
               <CardDescription>按 2026 年样本区域新增装机增速排序。</CardDescription>
             </div>
           </CardHeader>
-          <EChart option={growthOption} height={320} />
+          <EChart option={growthOption} height={compactCharts ? 292 : 320} />
           <div className="mt-3 flex justify-end">
             <DataSourceTag
               source={sourceTags.regionGrowth.text}
