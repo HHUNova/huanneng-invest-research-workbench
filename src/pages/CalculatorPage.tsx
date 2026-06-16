@@ -65,12 +65,39 @@ function RatioField({
   );
 }
 
-function buildCashFlowOption(result: CalculationResult): EChartOption {
+function buildCashFlowOption(result: CalculationResult, compact = false): EChartOption {
   return {
-    tooltip: { trigger: "axis" },
-    legend: { top: 0 },
-    xAxis: { type: "category", data: result.annualCashFlows.map((item) => `Y${item.year}`) },
-    yAxis: { type: "value", name: "百万美元" },
+    tooltip: {
+      trigger: "axis",
+      confine: true,
+      valueFormatter: (value) => `${formatNumber(Number(value), 1)} 百万美元`,
+    },
+    legend: compact
+      ? {
+          top: 0,
+          left: "center",
+          itemWidth: 14,
+          itemHeight: 8,
+          itemGap: 14,
+          textStyle: { color: "#475569", fontSize: 12 },
+        }
+      : { top: 0 },
+    grid: compact
+      ? { top: 52, right: 8, bottom: 28, left: 4, containLabel: true }
+      : { top: 48, right: 24, bottom: 40, left: 56, containLabel: true },
+    xAxis: {
+      type: "category",
+      data: result.annualCashFlows.map((item) => `Y${item.year}`),
+      axisLabel: { color: "#475569", fontSize: compact ? 11 : 12, interval: compact ? 3 : "auto", margin: 8 },
+      axisTick: { alignWithLabel: true },
+    },
+    yAxis: {
+      type: "value",
+      name: compact ? undefined : "百万美元",
+      splitNumber: compact ? 4 : 5,
+      axisLabel: { color: "#475569", fontSize: compact ? 11 : 12 },
+      splitLine: { lineStyle: { color: "#E2E8F0", type: "dashed" } },
+    },
     series: [
       {
         name: "项目现金流",
@@ -460,7 +487,7 @@ export function CalculatorPage({
               </div>
               <WalletCards aria-hidden="true" className="h-5 w-5 text-primary-700" strokeWidth={1.5} />
             </CardHeader>
-            <EChart option={buildCashFlowOption(result)} height={320} />
+            <EChart option={buildCashFlowOption(result, compactCharts)} height={compactCharts ? 300 : 320} />
           </Card>
 
           <div className="grid gap-6">
